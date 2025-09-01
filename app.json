@@ -6,7 +6,7 @@
   "keywords": ["bot", "node", "baileys", "whatsapp"],
   "logo": "https://files.catbox.moe/tehtjf.png",
   "repository": "https://github.com/joxua900-cpu/JAVIERJOXY-XMD",
-  "success_url": "/",
+  "success_url": "http://localhost:3000/",
   "stack": "heroku-24",
   "env": {
     "PREFIX": {

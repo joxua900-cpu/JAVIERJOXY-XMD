@@ -20,7 +20,7 @@ mongoose.connect(MONGO_URI, {
 .then(() => console.log('✅ Database connected'))
 .catch(err => console.error(err));
 const databasePath = path.join(__dirname, './database.db');
-const DATABASE_URL = process.env.DATABASE_URL === undefined
+const DATABASE_URL = process.env.DATABASE_URL === "mongodb+srv://joxua900_db_user:Fuhx485zXAunGTkN@cluster0.eznpru5.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
     ? databasePath
     : process.env.DATABASE_URL;
 
