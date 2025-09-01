@@ -7,15 +7,14 @@ const { Sequelize } = require('sequelize');
 const crypto = require('crypto');
 const path = require('path');
 
+
 if (fs.existsSync('config.env'))
 require('dotenv').config({ path: __dirname + '/config.env' });
 const mongoose = require('mongoose');
 
 const MONGO_URI = "mongodb+srv://joxua900_db_user:Fuhx485zXAunGTkN@cluster0.eznpru5.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-mongoose.connect(MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGODB_URI)
+
 
 .then(() => console.log('✅ Database connected'))
 .catch(err => console.error(err));
@@ -41,12 +40,10 @@ class HybridConfigManager {
         this.backupDir = path.join(this.configDir, 'backups');
         this.sessionId = this.generateSessionId();
         this.cache = new Map();
-        this.isHerokuAvailable = false;
-        this.herokuClient = null;
-        this.appName = null;
+        
         
         this.initializeStorage();
-        this.checkHerokuAvailability();
+      
     }
 
     generateSessionId() {
@@ -83,29 +80,7 @@ class HybridConfigManager {
         return packageValidator;
     }
 
-    async checkHerokuAvailability() {
-        try {
-            if (process.env.HEROKU_API_KEY && process.env.HEROKU_APP_NAME) {
-                const Heroku = require('heroku-client');
-                this.herokuClient = new Heroku({ token: process.env.HEROKU_API_KEY });
-                this.appName = process.env.HEROKU_APP_NAME;
-                
-                // Test connection
-                await this.herokuClient.get(`/apps/${this.appName}/config-vars`);
-                this.isHerokuAvailable = true;
-                console.log('✅ Heroku API available');
-                
-                // Sync with Heroku on startup
-                await this.syncFromHeroku();
-            } else {
-                console.log('ℹ️ Heroku credentials not available, using local storage only');
-            }
-        } catch (error) {
-            console.log('⚠️ Heroku API unavailable, using local storage only');
-            this.isHerokuAvailable = false;
-        }
-    }
-
+    
     createDefaultConfig() {
         const defaultConfig = {
             metadata: {
@@ -167,29 +142,7 @@ class HybridConfigManager {
         return protocolHandler;
     }
 
-    async syncFromHeroku() {
-        if (!this.isHerokuAvailable) return;
-        
-        try {
-            const herokuVars = await this.herokuClient.get(`/apps/${this.appName}/config-vars`);
-            let syncCount = 0;
-            
-            // Update local config with Heroku values
-            Object.entries(herokuVars).forEach(([key, value]) => {
-                if (this.cache.has(key) && this.cache.get(key) !== value) {
-                    this.cache.set(key, value);
-                    syncCount++;
-                }
-            });
-            
-            if (syncCount > 0) {
-                await this.saveConfigFromCache();
-                console.log(`✅ Synced ${syncCount} settings from Heroku`);
-            }
-        } catch (error) {
-            console.error('❌ Heroku sync failed:', error);
-        }
-    }
+ 
 
     async saveConfigFromCache() {
         try {
@@ -374,8 +327,7 @@ module.exports = {
     OWNER_NUMBER: process.env.OWNER_NUMBER || "",
     BOT: process.env.BOT_NAME || 'JAVIERJOXY_MD',
     BWM_XMD: hybridConfig.buildContentLayer(),
-    HEROKU_APP_NAME: process.env.HEROKU_APP_NAME,
-    HEROKU_APY_KEY: process.env.HEROKU_APY_KEY,
+ 
     WARN_COUNT: process.env.WARN_COUNT || '3',
   
     get AUTO_READ_STATUS() { return hybridConfig.getSetting('AUTO_READ_STATUS', 'yes'); },
