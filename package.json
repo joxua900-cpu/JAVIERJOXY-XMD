@@ -15,7 +15,7 @@
     "c": "tsc",                                          
     "dev": "npx nodemon index.js",
     "pm2-start": "npx pm2 start index.js --attach",
-    "build": "echo 'Skipping build step'",
+    "build": "echo  'No build step required'",
     "xmd": "npx pm2 start index.js --attach"
 },
   "keywords": [
