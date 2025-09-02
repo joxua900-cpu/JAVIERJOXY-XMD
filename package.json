@@ -9,14 +9,14 @@
     "npm": "10.9.3"
   },
   "scripts": {
-   "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "node index.js",
     "test": "node index.js",
     "vercel-build": "echo 'skip build step'",
-    "c": "tsc",
-    "pm2-start": "pm2 start index.js --attach",
-    "xmd": "pm2 start index.js --attach"
-  },
+    "c": "tsc",                                          
+    "dev": "npx nodemon index.js",
+    "pm2-start": "npx pm2 start index.js --attach",
+    "xmd": "npx pm2 start index.js --attach"
+},
   "keywords": [
     "bot",
     "Baileys",
@@ -134,5 +134,9 @@
     "uuid": "^11.1.0",
     "wa-sticker-formatter": "^4.4.4",
     "wikipedia": "^2.1.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "pm2": "^6.0.9"
   }
 }
